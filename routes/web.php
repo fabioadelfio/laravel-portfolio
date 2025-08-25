@@ -23,6 +23,7 @@ Route::middleware(['auth'])
     ->group(function () {
         Route::get('/dashboard', [App\Http\Controllers\Admin\DashboardController::class, 'index'])
             ->name('dashboard');
+        Route::resource('projects', App\Http\Controllers\Admin\ProjectController::class);
     });
 
 

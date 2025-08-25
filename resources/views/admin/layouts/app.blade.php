@@ -13,10 +13,31 @@
         <nav class="bg-dark text-white p-3" style="width: 200px;">
             <h4>Admin</h4>
             <ul class="nav flex-column">
-                <li class="nav-item"><a href="#" class="nav-link text-white">Dashboard</a></li>
-                <li class="nav-item"><a href="#" class="nav-link text-white">Progetti</a></li>
-                <li class="nav-item"><a href="#" class="nav-link text-white">Logout</a></li>
+                {{-- Dashboard --}}
+                <li class="nav-item">
+                    <a href="{{ route('admin.dashboard') }}" class="nav-link text-white">
+                        Dashboard
+                    </a>
+                </li>
+
+                {{-- Progetti --}}
+                <li class="nav-item">
+                    <a href="{{ route('admin.projects.index') }}" class="nav-link text-white">
+                        Progetti
+                    </a>
+                </li>
+
+                {{-- Logout --}}
+                <li class="nav-item">
+                    <form action="{{ route('logout') }}" method="POST">
+                        @csrf
+                        <button type="submit" class="nav-link btn btn-link text-white p-0">
+                            Logout
+                        </button>
+                    </form>
+                </li>
             </ul>
+
         </nav>
 
         {{-- Contenuto --}}
