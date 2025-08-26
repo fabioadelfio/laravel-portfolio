@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Admin;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Models\Project;
+use Illuminate\Support\Str;
 
 class ProjectController extends Controller
 {
@@ -22,7 +23,7 @@ class ProjectController extends Controller
      */
     public function create()
     {
-        //
+        return view('admin.projects.create');
     }
 
     /**
@@ -30,7 +31,16 @@ class ProjectController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        $data = $request->validate([
+            'title' => 'required|max:255',
+            'description' => 'nullable|string',
+        ]);
+
+        $data['slug'] = Str::slug($data['title'], '-');
+
+        Project::create($data);
+
+        return redirect()->route('admin.projects.index')->with('success', 'Progetto creato con successo!');
     }
 
     /**
@@ -44,24 +54,34 @@ class ProjectController extends Controller
     /**
      * Show the form for editing the specified resource.
      */
-    public function edit(string $id)
+    public function edit(\App\Models\Project $project)
     {
-        //
+        return view('admin.projects.edit', compact('project'));
     }
 
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, string $id)
+    public function update(Project $project, Request $request)
     {
-        //
+        $data = $request->validate([
+            'title' => 'required|max:255',
+            'description' => 'nullable|string',
+        ]);
+
+        $data['slug'] = Str::slug($data['title'], '-');
+
+        $project->update($data);
+
+        return redirect()->route('admin.projects.index')->with('success', 'Progetto aggiornato con successo!');
     }
 
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(string $id)
+    public function destroy(Project $project)
     {
-        //
+        $project->delete();
+        return redirect()->route('admin.projects.index')->with('success', 'Progetto eliminato con successo!');
     }
 }

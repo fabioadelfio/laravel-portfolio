@@ -1,36 +1,38 @@
 @extends('admin.layouts.app')
 
 @section('content')
-<h1>I miei Progetti</h1>
+<div class="container">
+    <h1>Lista Progetti</h1>
 
-<table class="table table-striped">
-    <thead>
-        <tr>
-            <th>Titolo</th>
-            <th>Slug</th>
-            <th>Cover</th>
-            <th>Azioni</th>
-        </tr>
-    </thead>
-    <tbody>
-        @foreach ($projects as $project)
-        <tr>
-            <td>{{ $project->title }}</td>
-            <td>{{ $project->slug }}</td>
-            <td>
-                @if($project->cover_image)
-                <img src="{{ asset('storage/' . $project->cover_image) }}" alt="{{ $project->title }}" width="100">
-                @else
-                <span>Nessuna immagine</span>
-                @endif
-            </td>
-            <td>
-                <a href="{{ route('admin.projects.show', $project) }}" class="btn btn-sm btn-primary">
-                    Dettagli
-                </a>
-            </td>
-        </tr>
-        @endforeach
-    </tbody>
-</table>
+    <a href="{{ route('admin.projects.create') }}" class="btn btn-success mb-3">Nuovo Progetto</a>
+
+    <table class="table table-bordered">
+        <thead>
+            <tr>
+                <th>ID</th>
+                <th>Titolo</th>
+                <th>Tipo</th> {{-- opzionale se hai la relazione Type --}}
+                <th>Azioni</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach ($projects as $project)
+            <tr>
+                <td>{{ $project->id }}</td>
+                <td><a href="{{ route('admin.projects.show', $project) }}">{{ $project->title }}</a></td>
+                <td>{{ $project->type->name ?? '-' }}</td>
+                <td>
+                    <a href="{{ route('admin.projects.edit', $project) }}" class="btn btn-warning btn-sm">Modifica</a>
+
+                    <form action="{{ route('admin.projects.destroy', $project) }}" method="POST" style="display:inline-block">
+                        @csrf
+                        @method('DELETE')
+                        <button class="btn btn-danger btn-sm" onclick="return confirm('Vuoi eliminare questo progetto?')">Elimina</button>
+                    </form>
+                </td>
+            </tr>
+            @endforeach
+        </tbody>
+    </table>
+</div>
 @endsection
