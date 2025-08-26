@@ -11,7 +11,7 @@
             <tr>
                 <th>ID</th>
                 <th>Titolo</th>
-                <th>Tipo</th> {{-- opzionale se hai la relazione Type --}}
+                <th>Tipo</th>
                 <th>Azioni</th>
             </tr>
         </thead>
@@ -20,7 +20,7 @@
             <tr>
                 <td>{{ $project->id }}</td>
                 <td><a href="{{ route('admin.projects.show', $project) }}">{{ $project->title }}</a></td>
-                <td>{{ $project->type->name ?? '-' }}</td>
+                <td>{{ $project->type ? $project->type->name : '-' }}</td>
                 <td>
                     <a href="{{ route('admin.projects.edit', $project) }}" class="btn btn-warning btn-sm">Modifica</a>
 

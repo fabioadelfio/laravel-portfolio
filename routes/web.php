@@ -26,6 +26,6 @@ Route::middleware(['auth'])
         Route::resource('projects', App\Http\Controllers\Admin\ProjectController::class);
     });
 
-
+Route::resource('types', App\Http\Controllers\Admin\TypeController::class);
 
 require __DIR__ . '/auth.php';
