@@ -2,9 +2,9 @@
 
 namespace Database\Seeders;
 
-use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
 use App\Models\Project;
+use App\Models\Type;
 use Illuminate\Support\Str;
 
 class ProjectSeeder extends Seeder
@@ -14,6 +14,12 @@ class ProjectSeeder extends Seeder
      */
     public function run(): void
     {
+        // Assicurati che esista almeno un Type
+        $type = Type::first();
+        if (!$type) {
+            $type = Type::create(['name' => 'Generico', 'slug' => 'generico']);
+        }
+
         $projects = [
             [
                 'title' => 'Portfolio Personale',
@@ -37,7 +43,8 @@ class ProjectSeeder extends Seeder
                 'title' => $project['title'],
                 'description' => $project['description'],
                 'slug' => Str::slug($project['title']),
-                'cover_image' => $project['cover_image']
+                'cover_image' => $project['cover_image'],
+                'type_id' => $type->id // Associa il type
             ]);
         }
     }
