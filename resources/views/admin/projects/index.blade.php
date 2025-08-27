@@ -12,6 +12,7 @@
                 <th>ID</th>
                 <th>Titolo</th>
                 <th>Tipo</th>
+                <th>Tecnologie</th>
                 <th>Azioni</th>
             </tr>
         </thead>
@@ -22,8 +23,14 @@
                 <td><a href="{{ route('admin.projects.show', $project) }}">{{ $project->title }}</a></td>
                 <td>{{ $project->type ? $project->type->name : '-' }}</td>
                 <td>
+                    @forelse ($project->technologies as $tech)
+                    <span class="badge bg-info">{{ $tech->name }}</span>
+                    @empty
+                    <span class="text-muted">Nessuna</span>
+                    @endforelse
+                </td>
+                <td>
                     <a href="{{ route('admin.projects.edit', $project) }}" class="btn btn-warning btn-sm">Modifica</a>
-
                     <form action="{{ route('admin.projects.destroy', $project) }}" method="POST" style="display:inline-block">
                         @csrf
                         @method('DELETE')
@@ -34,5 +41,6 @@
             @endforeach
         </tbody>
     </table>
+
 </div>
 @endsection

@@ -9,6 +9,15 @@
     <div class="card-body">
         <h1 class="card-title">{{ $project->title }}</h1>
         <p class="card-text">{{ $project->description }}</p>
+        <h5>Tecnologie utilizzate:</h5>
+        <ul>
+            @forelse($project->technologies as $tech)
+            <li>{{ $tech->name }}</li>
+            @empty
+            <li>Nessuna tecnologia associata</li>
+            @endforelse
+        </ul>
+
         <p><strong>Tipo:</strong> {{ $project->type ? $project->type->name : 'Nessun tipo' }}</p>
         <p><strong>Slug:</strong> {{ $project->slug }}</p>
 

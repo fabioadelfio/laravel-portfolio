@@ -5,15 +5,29 @@
     <h1>Crea un nuovo progetto</h1>
 
     <form action="{{ route('admin.projects.store') }}" method="POST">
+
         @csrf
+
         <div class="mb-3">
             <label for="title" class="form-label">Titolo</label>
             <input type="text" name="title" id="title" class="form-control" required>
         </div>
+
         <div class="mb-3">
             <label for="description" class="form-label">Descrizione</label>
             <textarea name="description" id="description" rows="5" class="form-control"></textarea>
         </div>
+
+        <div class="mb-3">
+            <label for="technologies" class="form-label">Tecnologie</label><br>
+            @foreach ($technologies as $tech)
+            <input type="checkbox" name="technologies[]" value="{{ $tech->id }}"
+                {{ (in_array($tech->id, old('technologies', $project->technologies->pluck('id')->toArray() ?? []))) ? 'checked' : '' }}>
+            {{ $tech->name }} <br>
+            @endforeach
+        </div>
+
+
         <div class="mb-3">
             <label for="type_id" class="form-label">Tipo</label>
             <select name="type_id" id="type_id" class="form-select">

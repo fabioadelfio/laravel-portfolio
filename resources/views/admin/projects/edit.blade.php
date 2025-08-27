@@ -19,6 +19,17 @@
         </div>
 
         <div class="mb-3">
+            <label for="technologies" class="form-label">Tecnologie</label><br>
+            @foreach ($technologies as $tech)
+            <input type="checkbox" name="technologies[]" value="{{ $tech->id }}"
+                {{ (in_array($tech->id, old('technologies', $project->technologies->pluck('id')->toArray() ?? []))) ? 'checked' : '' }}>
+            {{ $tech->name }} <br>
+            @endforeach
+        </div>
+
+
+
+        <div class="mb-3">
             <label for="type_id" class="form-label">Tipo</label>
             <select name="type_id" id="type_id" class="form-select">
                 <option value="">-- Nessun tipo --</option>

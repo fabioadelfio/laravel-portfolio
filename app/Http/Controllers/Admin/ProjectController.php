@@ -7,6 +7,8 @@ use Illuminate\Http\Request;
 use App\Models\Project;
 use Illuminate\Support\Str;
 use App\Models\Type;
+use App\Models\Technology;
+
 
 class ProjectController extends Controller
 {
@@ -15,7 +17,8 @@ class ProjectController extends Controller
      */
     public function index()
     {
-        $projects = Project::all();
+        $projects = Project::with('type', 'technologies')->get();
+
         return view('admin.projects.index', compact('projects'));
     }
 
@@ -25,26 +28,40 @@ class ProjectController extends Controller
     public function create()
     {
         $types = Type::all();
-        return view('admin.projects.create', compact('types'));
+        $technologies = Technology::all();
+
+        return view('admin.projects.create', [
+            'types' => $types,
+            'technologies' => $technologies,
+            'project' => new Project(), // così esiste sempre
+        ]);
     }
 
     /**
      * Store a newly created resource in storage.
      */
-    public function store(Request $request)
+    public function store(Request $request, Project $project)
     {
         $data = $request->validate([
             'title' => 'required|max:255',
             'description' => 'nullable|string',
-            'type_id' => 'nullable|exists:types,id'
+            'type_id' => 'nullable|exists:types,id',
+            'technologies' => 'array',
+            'technologies.*' => 'exists:technologies,id',
         ]);
 
         $data['slug'] = Str::slug($data['title'], '-');
 
-        Project::create($data);
+        $project = Project::create($data);
+
+        // associa tecnologie scelte
+        if (isset($data['technologies'])) {
+            $project->technologies()->sync($data['technologies']);
+        }
 
         return redirect()->route('admin.projects.index')->with('success', 'Progetto creato con successo!');
     }
+
 
     /**
      * Display the specified resource.
@@ -60,26 +77,34 @@ class ProjectController extends Controller
     public function edit(\App\Models\Project $project)
     {
         $types = Type::all();
-        return view('admin.projects.edit', compact('project', 'types'));
+        $technologies = Technology::all();
+
+        return view('admin.projects.edit', compact('project', 'types', 'technologies'));
     }
 
     /**
      * Update the specified resource in storage.
      */
-    public function update(Project $project, Request $request)
+    public function update(Request $request, Project $project)
     {
         $data = $request->validate([
             'title' => 'required|max:255',
             'description' => 'nullable|string',
-            'type_id' => 'nullable|exists:types,id'
+            'type_id' => 'nullable|exists:types,id',
+            'technologies' => 'array',
+            'technologies.*' => 'exists:technologies,id',
         ]);
 
         $data['slug'] = Str::slug($data['title'], '-');
 
         $project->update($data);
 
+        // aggiorna tecnologie (se non seleziono nulla -> array vuoto)
+        $project->technologies()->sync($data['technologies'] ?? []);
+
         return redirect()->route('admin.projects.index')->with('success', 'Progetto aggiornato con successo!');
     }
+
 
     /**
      * Remove the specified resource from storage.
